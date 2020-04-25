@@ -1,29 +1,34 @@
-import React from "react";
-import { Image, Text, TouchableOpacity } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, { useCallback } from "react";
+import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
-import bannerImg from "../../assets/banner.png";
+import Button from "../../components/Button";
 
 import { styles } from "./styles";
 
 export default function Welcome() {
   const navigation = useNavigation();
 
-  function navigateToTimer() {
-    navigation.navigate("Timer");
-  }
+  const navigateToTimer = useCallback(() => navigation.navigate("Timer"), [
+    navigation,
+  ]);
 
   return (
-    <LinearGradient colors={["#E7F3FE", "#9ABEE0"]} style={styles.container}>
-      <Image style={styles.banner} source={bannerImg} />
-
-      <Text style={styles.title}>Staying focused at work isn’t easy!</Text>
-
-      <TouchableOpacity style={styles.button} onPress={navigateToTimer}>
-        <MaterialIcons name="chevron-right" size={32} color="#FFF" />
-      </TouchableOpacity>
-    </LinearGradient>
+    <View style={styles.container}>
+      <LottieView
+        loop={true}
+        autoPlay={true}
+        autoSize
+        source={require("../../../assets/yoga-girl-3.json")}
+      />
+      <Text style={styles.text}>Staying focused at work isn’t easy!</Text>
+      <Button
+        text="Getting Started"
+        icon="arrow-right"
+        style={styles.button}
+        onPress={navigateToTimer}
+      />
+    </View>
   );
 }
