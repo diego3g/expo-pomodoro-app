@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { View, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import FAB from "../../components/FAB";
@@ -10,6 +11,7 @@ import { styles } from "./styles";
 export default function Timer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [secondsEllapsed, setSecondsEllapsed] = useState(0);
+  const navigation = useNavigation();
 
   const progress = useMemo(() => secondsEllapsed / 6, [secondsEllapsed]);
   const formatedTimeEllapsed = useMemo(() => {
@@ -31,6 +33,12 @@ export default function Timer() {
   const handleToggleTimer = useCallback(() => setIsPlaying(!isPlaying), [
     isPlaying,
   ]);
+  const onAnimationComplete = useCallback(() => {
+    if (secondsEllapsed / 60 > 25) {
+      setIsPlaying(false);
+      navigation.navigate("Congrats");
+    }
+  }, [secondsEllapsed, navigation]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -55,6 +63,7 @@ export default function Timer() {
         style={styles.progressContainer}
         tintColor="#9080D3"
         backgroundColor="#F9FBF2"
+        onAnimationComplete={onAnimationComplete}
       >
         {() => (
           <View style={styles.timeContainer}>
