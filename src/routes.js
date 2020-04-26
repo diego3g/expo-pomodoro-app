@@ -1,5 +1,10 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { Platform } from "react-native";
+import {
+  createStackNavigator,
+  TransitionSpecs,
+  TransitionPresets,
+} from "@react-navigation/stack";
 
 const AppStack = createStackNavigator();
 
@@ -9,7 +14,22 @@ import Congrats from "./pages/Congrats";
 
 function Routes() {
   return (
-    <AppStack.Navigator screenOptions={{ headerShown: false }}>
+    <AppStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        transitionSpec: {
+          open:
+            Platform.OS === "ios"
+              ? TransitionSpecs.TransitionIOSSpec
+              : TransitionSpecs.FadeInFromBottomAndroidSpec,
+          close:
+            Platform.OS === "ios"
+              ? TransitionSpecs.TransitionIOSSpec
+              : TransitionSpecs.FadeOutToBottomAndroidSpec,
+        },
+        ...TransitionPresets.SlideFromRightIOS,
+      }}
+    >
       <AppStack.Screen name="Welcome" component={Welcome} />
       <AppStack.Screen name="Timer" component={Timer} />
       <AppStack.Screen name="Congrats" component={Congrats} />
