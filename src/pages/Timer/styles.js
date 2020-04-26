@@ -3,33 +3,32 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    paddingVertical: 50,
+    paddingHorizontal: 25,
     alignItems: "center",
+    backgroundColor: "#FFF",
   },
-
   title: {
-    color: "#1C354F",
-    fontSize: 28,
     fontFamily: "Poppins-Regular",
-    textAlign: "center",
-    maxWidth: 300,
-    marginBottom: 75,
+    fontSize: 30,
+    color: "#7159C1",
+    marginBottom: 70,
   },
-
-  button: {
-    width: 72,
-    height: 72,
-    backgroundColor: "#2E5B9A",
-    borderRadius: 36,
+  progressContainer: {
+    marginBottom: 100,
+  },
+  timeContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 80,
   },
-
-  progress: {
-    color: "#1C354F",
-    fontSize: 45,
-    fontFamily: "Poppins-Bold",
-    textAlign: "center",
+  timeEllapsed: {
+    fontFamily: "Poppins-Light",
+    fontSize: 70,
+    color: "#000022",
+  },
+  timeUnity: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 15,
+    color: "#000022",
   },
 });

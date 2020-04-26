@@ -1,63 +1,68 @@
-import React, { useState, useRef } from "react";
-import { Text, TouchableOpacity } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { View, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+
+import FAB from "../../components/FAB";
 
 import { styles } from "./styles";
 
-function formatSeconds(seconds) {
-  if (seconds < 60) {
-    return `${seconds} seg`;
-  }
-
-  return `${Math.floor(seconds / 60)} min`;
-}
-
 export default function Timer() {
-  const timerRef = useRef();
-
-  const [timerEnabled, setTimerEnabled] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [secondsEllapsed, setSecondsEllapsed] = useState(0);
 
-  function toggleTimer() {
-    if (timerEnabled) {
-      clearInterval(timerRef.current);
+  const progressFill = useMemo(() => secondsEllapsed / 6, [secondsEllapsed]);
+  const formatedTimeEllapsed = useMemo(() => {
+    if (secondsEllapsed > 60) {
+      return Math.floor(secondsEllapsed / 60);
+    }
 
-      setTimerEnabled(false);
+    return secondsEllapsed;
+  }, [secondsEllapsed]);
+  const timeUnity = useMemo(() => {
+    if (secondsEllapsed < 60) {
+      return "seconds";
     } else {
-      timerRef.current = setInterval(() => {
-        setSecondsEllapsed((state) => state + 1);
+      return "minutes";
+    }
+  }, [secondsEllapsed]);
+  const FABIcon = useMemo(() => (isPlaying ? "pause" : "play"), [isPlaying]);
+
+  const handleToggleTimer = useCallback(() => setIsPlaying(!isPlaying), [
+    isPlaying,
+  ]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      const time = setInterval(() => {
+        setSecondsEllapsed(secondsEllapsed + 1);
       }, 1000);
 
-      setTimerEnabled(true);
+      return () => {
+        clearInterval(time);
+      };
     }
-  }
+  }, [isPlaying, secondsEllapsed]);
 
   return (
-    <LinearGradient colors={["#E7F3FE", "#9ABEE0"]} style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Pomodora</Text>
-
       <AnimatedCircularProgress
-        size={300}
-        width={12}
-        fill={(secondsEllapsed * 100) / 600}
-        tintColor="#75A1DE"
+        size={260}
+        width={5}
+        fill={progressFill}
         rotation={0}
-        backgroundColor="#fff"
+        style={styles.progressContainer}
+        tintColor="#9080D3"
+        backgroundColor="#F9FBF2"
       >
         {() => (
-          <Text style={styles.progress}>{formatSeconds(secondsEllapsed)}</Text>
+          <View style={styles.timeContainer}>
+            <Text style={styles.timeEllapsed}>{formatedTimeEllapsed}</Text>
+            <Text style={styles.timeUnity}>{timeUnity}</Text>
+          </View>
         )}
       </AnimatedCircularProgress>
-
-      <TouchableOpacity style={styles.button} onPress={toggleTimer}>
-        <MaterialIcons
-          name={timerEnabled ? "pause" : "play-arrow"}
-          size={32}
-          color="#FFF"
-        />
-      </TouchableOpacity>
-    </LinearGradient>
+      <FAB name={FABIcon} onPress={handleToggleTimer} />
+    </View>
   );
 }
