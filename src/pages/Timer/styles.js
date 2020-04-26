@@ -15,11 +15,28 @@ export const styles = StyleSheet.create({
     marginBottom: 70,
   },
   progressContainer: {
-    marginBottom: 100,
+    marginBottom: 25,
   },
   timeContainer: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  timerSettingsContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    marginBottom: 50,
+  },
+  timerSettingsOption: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  timeText: {
+    fontFamily: "Poppins-Regular",
+    fontSize: 20,
+    textAlign: "center",
+    padding: 5,
   },
   timeEllapsed: {
     fontFamily: "Poppins-Light",
