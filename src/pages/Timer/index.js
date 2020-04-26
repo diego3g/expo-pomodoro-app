@@ -35,6 +35,7 @@ export default function Timer() {
   ]);
   const onAnimationComplete = useCallback(() => {
     if (secondsEllapsed / 60 > 25) {
+      setSecondsEllapsed(0);
       setIsPlaying(false);
       navigation.navigate("Congrats");
     }

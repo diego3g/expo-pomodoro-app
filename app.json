@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pomodora",
+    "name": "Pomodora",
     "slug": "pomodora",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
