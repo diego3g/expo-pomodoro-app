@@ -3,30 +3,30 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFF",
+    paddingHorizontal: 25,
+    paddingVertical: 25,
   },
-
-  banner: {
-    alignSelf: "flex-end",
-  },
-
-  title: {
-    color: "#1C354F",
-    fontSize: 28,
+  text: {
     fontFamily: "Poppins-Light",
+    fontSize: 30,
     textAlign: "center",
-    maxWidth: 300,
-    marginTop: 75,
-    marginBottom: 50,
+    color: "#41414B",
+    marginTop: 5,
+    marginBottom: 75,
   },
-
   button: {
-    width: 72,
-    height: 72,
-    backgroundColor: "#2E5B9A",
-    borderRadius: 36,
+    backgroundColor: "#7159C1",
+    paddingHorizontal: 25,
+    paddingVertical: 15,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 90,
+    position: "absolute",
+    bottom: 25,
+    right: 25,
   },
 });

@@ -1,63 +1,89 @@
-import React, { useState, useRef } from "react";
-import { Text, TouchableOpacity } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { View, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import FAB from "../../components/FAB";
 
 import { styles } from "./styles";
 
-function formatSeconds(seconds) {
-  if (seconds < 60) {
-    return `${seconds} seg`;
-  }
-
-  return `${Math.floor(seconds / 60)} min`;
-}
-
 export default function Timer() {
-  const timerRef = useRef();
-
-  const [timerEnabled, setTimerEnabled] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [secondsEllapsed, setSecondsEllapsed] = useState(0);
+  const navigation = useNavigation();
 
-  function toggleTimer() {
-    if (timerEnabled) {
-      clearInterval(timerRef.current);
+  const progress = useMemo(() => secondsEllapsed / 6, [secondsEllapsed]);
+  const formatedTimeEllapsed = useMemo(() => {
+    if (secondsEllapsed > 60) {
+      return Math.floor(secondsEllapsed / 60);
+    }
 
-      setTimerEnabled(false);
+    return secondsEllapsed;
+  }, [secondsEllapsed]);
+  const timeUnity = useMemo(() => {
+    if (secondsEllapsed < 60) {
+      return "seconds";
     } else {
-      timerRef.current = setInterval(() => {
-        setSecondsEllapsed((state) => state + 1);
+      return "minutes";
+    }
+  }, [secondsEllapsed]);
+  const FABIcon = useMemo(() => (isPlaying ? "pause" : "play"), [isPlaying]);
+
+  const handleToggleTimer = useCallback(() => setIsPlaying(!isPlaying), [
+    isPlaying,
+  ]);
+  const onAnimationComplete = useCallback(() => {
+    if (secondsEllapsed / 60 > 25) {
+      setSecondsEllapsed(0);
+      setIsPlaying(false);
+      navigation.navigate("Congrats");
+    }
+  }, [secondsEllapsed, navigation]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      const time = setInterval(() => {
+        setSecondsEllapsed(secondsEllapsed + 1);
       }, 1000);
 
-      setTimerEnabled(true);
+      return () => {
+        clearInterval(time);
+      };
     }
-  }
+  }, [isPlaying, secondsEllapsed]);
 
   return (
-    <LinearGradient colors={["#E7F3FE", "#9ABEE0"]} style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Pomodora</Text>
-
       <AnimatedCircularProgress
-        size={300}
-        width={12}
-        fill={(secondsEllapsed * 100) / 600}
-        tintColor="#75A1DE"
+        size={260}
+        width={5}
+        fill={progress}
         rotation={0}
-        backgroundColor="#fff"
+        style={styles.progressContainer}
+        tintColor="#9080D3"
+        backgroundColor="#F9FBF2"
+        onAnimationComplete={onAnimationComplete}
       >
         {() => (
-          <Text style={styles.progress}>{formatSeconds(secondsEllapsed)}</Text>
+          <View style={styles.timeContainer}>
+            <Text style={styles.timeEllapsed}>{formatedTimeEllapsed}</Text>
+            <Text style={styles.timeUnity}>{timeUnity}</Text>
+          </View>
         )}
       </AnimatedCircularProgress>
-
-      <TouchableOpacity style={styles.button} onPress={toggleTimer}>
-        <MaterialIcons
-          name={timerEnabled ? "pause" : "play-arrow"}
-          size={32}
-          color="#FFF"
-        />
-      </TouchableOpacity>
-    </LinearGradient>
+      <View style={styles.timerSettingsContainer}>
+        <View style={styles.timerSettingsOption}>
+          <MaterialCommunityIcons name="briefcase" size={24} color="#7F7EFF" />
+          <Text style={styles.timeText}>25 min</Text>
+        </View>
+        <View style={styles.timerSettingsOption}>
+          <MaterialCommunityIcons name="update" size={24} color="#7F7EFF" />
+          <Text style={styles.timeText}>5 min</Text>
+        </View>
+      </View>
+      <FAB name={FABIcon} onPress={handleToggleTimer} />
+    </View>
   );
 }
